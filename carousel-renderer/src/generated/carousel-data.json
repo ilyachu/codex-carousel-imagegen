@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "topic": "Markdown в интерактивные майндмапы",
+    "platform": "telegram",
+    "tone": "бодро",
+    "language": "ru",
+    "mode": "imagegen-only",
+    "slidesCount": 4,
+    "size": "1080x1350"
+  },
+  "styleLock": {
+    "visualStyle": "bright pop-up",
+    "headlineStyle": "крупные заголовки",
+    "palette": [
+      "#2667FF",
+      "#FF5A5F",
+      "#B8FF3D",
+      "#FFD84D",
+      "#F7F8FC",
+      "#101322"
+    ],
+    "safeMarginPx": 72
+  },
+  "slides": [
+    {
+      "id": "slide-01",
+      "role": "cover",
+      "layout": "hero",
+      "headline": "Markdown -> Mindmap за секунду",
+      "body": [
+        "Разложи сложную идею по полочкам",
+        "Покажи структуру проекта мгновенно"
+      ],
+      "visualIdea": "Яркий pop-up фон, узлы и карточки",
+      "needsImagegen": true,
+      "imagePromptKey": "slide-01-cover",
+      "runtimeAsset": "slide-01.png"
+    },
+    {
+      "id": "slide-02",
+      "role": "feature",
+      "layout": "split",
+      "headline": "Конвертация markdown в интерактив",
+      "body": [
+        "Из заметок сразу в кликабельную карту",
+        "Ветки, связи, фокус по узлам"
+      ],
+      "visualIdea": "Markdown слева, майндмапа справа",
+      "needsImagegen": true,
+      "imagePromptKey": "slide-02-convert",
+      "runtimeAsset": "slide-02.png"
+    },
+    {
+      "id": "slide-03",
+      "role": "feature",
+      "layout": "cards",
+      "headline": "Заметки, доки, проекты в одной карте",
+      "body": [
+        "Визуализируй документацию",
+        "Держи архитектуру и задачи перед глазами"
+      ],
+      "visualIdea": "Слои карточек и связи",
+      "needsImagegen": true,
+      "imagePromptKey": "slide-03-usecases",
+      "runtimeAsset": "slide-03.png"
+    },
+    {
+      "id": "slide-04",
+      "role": "feature-cta",
+      "layout": "ui-cta",
+      "headline": "Минимализм + экспорт и шаринг",
+      "body": [
+        "Чистый интерфейс без шума",
+        "Экспортируй и делись за пару кликов"
+      ],
+      "visualIdea": "Минималистичная UI панель и иконки шаринга",
+      "needsImagegen": true,
+      "imagePromptKey": "slide-04-export",
+      "runtimeAsset": "slide-04.png"
+    }
+  ]
+}

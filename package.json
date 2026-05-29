@@ -1,0 +1,25 @@
+{
+  "name": "codex-carousel-imagegen-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "kickoff": "node scripts/kickoff.mjs",
+    "predev": "node carousel-renderer/scripts/sync-data.mjs",
+    "dev": "vite --config carousel-renderer/vite.config.mjs",
+    "prebuild": "node carousel-renderer/scripts/sync-data.mjs",
+    "build": "vite build --config carousel-renderer/vite.config.mjs",
+    "export": "npm run build && node carousel-renderer/scripts/export.mjs",
+    "clean": "node carousel-renderer/scripts/clean.mjs",
+    "validate": "node scripts/validate-workflow.mjs"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "playwright": "^1.58.2",
+    "vite": "^7.1.0"
+  }
+}

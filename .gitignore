@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# OS / editor
+.DS_Store
+
+# Build artifacts
+carousel-renderer/dist/
+carousel-renderer/public/runtime-assets/
+
+# Generated outputs
+carousel-output/png/*.png
+carousel-output/preview-montage.png
+carousel-output/carousel.pdf
+carousel-output/render/
+
+# Runtime intake/session artifacts
+carousel-output/intake.json
+carousel-output/intake.md
+carousel-output/SESSION_PROMPT.md
+
+# Local environment
+.env
+.env.*
