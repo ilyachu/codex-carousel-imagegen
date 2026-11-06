@@ -3,6 +3,8 @@ node_modules/
 
 # OS / editor
 .DS_Store
+__pycache__/
+*.pyc
 
 # Build artifacts
 carousel-renderer/dist/
