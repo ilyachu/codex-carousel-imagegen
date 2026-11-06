@@ -24,16 +24,18 @@
 - Gemini API
 - Google AI API
 - Replicate
-- fal.ai
 - Buffer API
 - Figma API
+
+В Claude Code фоны и иллюстрации идут через fal.ai Nano Banana, скрипт `.agents/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py`. Если ключа нет, агент спрашивает его и сохраняет в `~/.config/fal/key` с правами `600`. В репозиторий ключ не кладётся.
 
 ## Структура
 
 ```text
 carousel-skill-lab/
-  .codex/skills/codex-carousel-imagegen/
   .agents/skills/codex-carousel-imagegen/
+  .codex/skills/codex-carousel-imagegen/  -> симлинк на .agents
+  .claude/skills/codex-carousel-imagegen/ -> симлинк на .agents
   carousel-renderer/
   carousel-output/
   examples/

@@ -6,9 +6,12 @@
 
 ## Что нужно перед стартом
 
-- установлен Codex
+- установлен Codex или Claude Code
 - доступен локальный `npm`
 - установлен skill `codex-carousel-imagegen`
+- для картинок в Claude Code ключ fal.ai не нужно класть в репозиторий: агент сам спросит его и сохранит в `~/.config/fal/key`
+
+Claude Code видит скилл из `.claude/skills/codex-carousel-imagegen` в этом репозитории и из `~/.claude/skills/codex-carousel-imagegen` после `./install.sh`. Картинки в Claude Code собирает `scripts/fal_nano_banana.py` моделью `fal-ai/nano-banana`. Если `~/.config/fal/key` и `FAL_KEY` пусты, агент останавливается, просит ключ и записывает его в этот файл с правами `600`. В Codex по-прежнему используется встроенная генерация изображений.
 
 ## Минимальный сценарий
 
