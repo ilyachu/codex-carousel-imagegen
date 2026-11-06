@@ -11,7 +11,42 @@
 - установлен skill `codex-carousel-imagegen`
 - для картинок в Claude Code ключ fal.ai не нужно класть в репозиторий: агент сам спросит его и сохранит в `~/.config/fal/key`
 
-Claude Code видит скилл из `.claude/skills/codex-carousel-imagegen` в этом репозитории и из `~/.claude/skills/codex-carousel-imagegen` после `./install.sh`. Картинки в Claude Code собирает `scripts/fal_nano_banana.py` моделью `fal-ai/nano-banana`. Если `~/.config/fal/key` и `FAL_KEY` пусты, агент останавливается, просит ключ и записывает его в этот файл с правами `600`. В Codex по-прежнему используется встроенная генерация изображений.
+Claude Code видит скилл из `.claude/skills/codex-carousel-imagegen` в этом репозитории и из `~/.claude/skills/codex-carousel-imagegen` после `./install.sh`. Картинки в Claude Code собирает `scripts/fal_imagegen.py`. Модель по умолчанию: GPT Image 2.5 Flare, `openai/gpt-image-2.5/flare/text-to-image`, качество `high`, кадр `1088x1360`. Если `~/.config/fal/key` и `FAL_KEY` пусты, агент останавливается, просит ключ и записывает его в этот файл с правами `600`. В Codex по-прежнему используется встроенная генерация изображений.
+
+## Стиль карусели по умолчанию
+
+Его использует рендер и агент, пока пользователь не попросит другой. Цифры совпадают с `carousel-renderer/src/styles.css`.
+
+Формат `1080x1350`. Поля `84px` со всех сторон. Слайд тёмный.
+
+Фон `#101216`. Текст `#F3F1EC`. Акцент `#D8A35D`. Предупреждение `#E27663`. Сверху тонкая линия и номер слайда. Картинка, если она есть, лежит под текстом и не содержит букв. В промте фона: тёмный уголь, мягкое янтарное свечение, тонкая тихая сетка, большое пустое место под заголовок.
+
+Шрифт заголовка: Iowan Old Style, затем Palatino Linotype, Book Antiqua, Georgia.
+Шрифт текста: Avenir Next, затем Segoe UI, Arial.
+
+Кегль на слайде:
+
+- обложка: `108px`
+- обычный заголовок: `88px`, жирный, межстрочный `0.95`, не длиннее 8 слов
+- основной текст: `34px`, одна-три короткие строки
+- пункты списка: `24px`
+- плашки: `20px`
+- eyebrow и номер слайда: `14px`, uppercase
+
+При генерации стиль можно задать самому. В первом сообщении или в опросе назови фон, шрифт заголовка, шрифт текста и кегль. Пустой ответ оставляет значения выше. Агент записывает выбор в `styleLock`, и рендер применяет его к слайдам.
+
+```bash
+npm run kickoff -- --non-interactive \
+  --background "светлая бумага" \
+  --background-color "#F6F1E8" \
+  --accent "#8C3A2F" \
+  --ink "#1C1915" \
+  --font-display "Georgia, serif" \
+  --font-body "Avenir Next, sans-serif" \
+  --headline-size 72 \
+  --cover-size 92 \
+  --body-size 30
+```
 
 ## Минимальный сценарий
 
@@ -42,7 +77,7 @@ npm run kickoff
 Либо сразу без интерактива:
 
 ```bash
-npm run kickoff -- --non-interactive --mode hybrid --platform telegram --tone бодро --background "журнальный с лёгкой плёнкой" --text-style "крупный заголовок"
+npm run kickoff -- --non-interactive --mode hybrid --platform telegram --tone бодро --background "журнальный с лёгкой плёнкой" --font-display "Georgia, serif" --headline-size 76 --body-size 30
 ```
 
 После этого используй готовый файл:
@@ -61,8 +96,7 @@ carousel-output/SESSION_PROMPT.md
 
 - как генерируем: гибридно, целиком через Image Gen или только рендером
 - для какой площадки и какой нужен тон
-- какой фон и настроение нужны
-- какой нужен текстовый стиль: крупнее, плотнее, строже или мягче
+- какой фон, цвет, шрифт заголовка, шрифт текста и кегль. Пустой ответ оставляет стиль по умолчанию
 
 7. Дождись, пока Codex соберёт структуру и, если нужно, визуалы через встроенную генерацию изображений Codex.
 

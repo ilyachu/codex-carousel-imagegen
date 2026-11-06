@@ -27,7 +27,7 @@
 - Buffer API
 - Figma API
 
-В Claude Code фоны и иллюстрации идут через fal.ai Nano Banana, скрипт `.agents/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py`. Если ключа нет, агент спрашивает его и сохраняет в `~/.config/fal/key` с правами `600`. В репозиторий ключ не кладётся.
+В Claude Code фоны идут через fal.ai GPT Image 2.5 Flare, скрипт `.agents/skills/codex-carousel-imagegen/scripts/fal_imagegen.py`. Если ключа нет, агент спрашивает его и сохраняет в `~/.config/fal/key` с правами `600`. Стиль слайдов по умолчанию описан в `ONBOARDING.md`.
 
 ## Структура
 

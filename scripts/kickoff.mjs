@@ -25,6 +25,11 @@ function hasFlag(flag) {
   return args.includes(flag);
 }
 
+function numberOr(value, fallback) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
 async function ask(question, fallback) {
   const suffix = fallback ? ` [${fallback}]` : "";
   const answer = (await rl.question(`${question}${suffix}: `)).trim();
@@ -46,23 +51,49 @@ async function main() {
       ? getArg("--tone") || "бодро"
       : await ask("Тон? спокойно / бодро / почти промо", "бодро");
     const backgroundMood = nonInteractive
-      ? getArg("--background") || "минималистичный"
-      : await ask(
-          "Фон и настроение? например журнальный, плёночный, технологичный, минималистичный",
-          "минималистичный"
-        );
+      ? getArg("--background") || "тёмный редакционный"
+      : await ask("Фон и настроение", "тёмный редакционный");
+    const background = nonInteractive
+      ? getArg("--background-color") || "#101216"
+      : await ask("Цвет фона", "#101216");
+    const accent = nonInteractive
+      ? getArg("--accent") || "#D8A35D"
+      : await ask("Цвет акцента", "#D8A35D");
+    const ink = nonInteractive
+      ? getArg("--ink") || "#F3F1EC"
+      : await ask("Цвет текста", "#F3F1EC");
+    const displayFont = nonInteractive
+      ? getArg("--font-display") || "Iowan Old Style, Palatino Linotype, Book Antiqua, Georgia, serif"
+      : await ask("Шрифт заголовка", "Iowan Old Style, Palatino Linotype, Book Antiqua, Georgia, serif");
+    const bodyFont = nonInteractive
+      ? getArg("--font-body") || "Avenir Next, Segoe UI, Arial, sans-serif"
+      : await ask("Шрифт текста", "Avenir Next, Segoe UI, Arial, sans-serif");
+    const headlineSize = numberOr(nonInteractive
+      ? getArg("--headline-size") || "88"
+      : await ask("Кегль заголовка, px", "88"), 88);
+    const coverSize = numberOr(nonInteractive
+      ? getArg("--cover-size") || "108"
+      : await ask("Кегль обложки, px", "108"), 108);
+    const bodySize = numberOr(nonInteractive
+      ? getArg("--body-size") || "34"
+      : await ask("Кегль основного текста, px", "34"), 34);
     const textStyle = nonInteractive
       ? getArg("--text-style") || "крупный заголовок"
-      : await ask(
-          "Текстовый стиль? например крупный заголовок, плотный набор, editorial, friendly",
-          "крупный заголовок"
-        );
+      : await ask("Характер набора", "крупный заголовок");
 
     const intake = {
       generationMode,
       platform,
       tone,
       backgroundMood,
+      background,
+      accent,
+      ink,
+      displayFont,
+      bodyFont,
+      headlineSize,
+      coverSize,
+      bodySize,
       textStyle,
       createdAt: new Date().toISOString()
     };
@@ -73,6 +104,14 @@ async function main() {
 - platform: \`${platform}\`
 - tone: \`${tone}\`
 - backgroundMood: \`${backgroundMood}\`
+- background: \`${background}\`
+- accent: \`${accent}\`
+- ink: \`${ink}\`
+- displayFont: \`${displayFont}\`
+- bodyFont: \`${bodyFont}\`
+- headlineSize: \`${headlineSize}\`
+- coverSize: \`${coverSize}\`
+- bodySize: \`${bodySize}\`
 - textStyle: \`${textStyle}\`
 `;
 
@@ -84,9 +123,12 @@ async function main() {
 Use $codex-carousel-imagegen.
 
 Прочитай настройки из carousel-output/intake.json и не задавай повторно вопросы, если они уже заполнены.
+Поля фона, шрифтов и кегля из intake перенеси в styleLock как есть. Это выбор пользователя, не заменяй его стилем по умолчанию.
+Рендер применяет styleLock.background, ink, accent, displayFont, bodyFont, headlineSize, coverSize, bodySize.
 
 Сделай карусель по моему тексту.
-Если нужен imagegen-only, используй встроенную генерацию изображений Codex, а не skill/API workflow с OPENAI_API_KEY.
+В Claude Code картинки фона делай через scripts/fal_imagegen.py, модель openai/gpt-image-2.5/flare/text-to-image.
+В Codex для imagegen-only используй встроенную генерацию изображений, не OPENAI_API_KEY.
 `;
     await fs.writeFile(sessionPromptPath, `${prompt}\n`);
 

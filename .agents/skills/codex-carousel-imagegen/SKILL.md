@@ -1,6 +1,6 @@
 ---
 name: "codex-carousel-imagegen"
-description: "Собирает локальную карусель для соцсетей из текста, статьи, темы или тезисов: бриф, структура слайдов, style lock, фоновые визуалы и PNG 1080x1350. В Codex визуалы через встроенную генерацию. В Claude Code визуалы через fal.ai Nano Banana по FAL_KEY, скрипт scripts/fal_nano_banana.py. Текст слайдов остаётся в HTML/CSS. Telegram, Instagram, LinkedIn, Threads, читаемая кириллица."
+description: "Собирает локальную карусель 1080x1350: бриф, слайды, стиль по умолчанию и PNG. В Claude Code фоны через fal.ai GPT Image 2.5 Flare, скрипт scripts/fal_imagegen.py, ключ спрашивается и пишется в ~/.config/fal/key. В Codex визуалы через встроенную генерацию. Текст слайдов в HTML/CSS. Telegram, Instagram, LinkedIn, Threads, читаемая кириллица."
 ---
 
 # Codex Carousel Imagegen Skill
@@ -43,16 +43,16 @@ chmod 600 ~/.config/fal/key
 
 Ключ не печатать обратно, не писать в скилл, промты, логи, коммиты и git. Если пользователь отказался дать ключ, собери карусель градиентами и прямо скажи, что картинки fal не сделаны.
 
-Скрипт лежит рядом со скиллом: `scripts/fal_nano_banana.py`.
-В репозитории: `.agents/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py`.
-После установки в Claude Code: `~/.claude/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py`.
+Скрипт лежит рядом со скиллом: `scripts/fal_imagegen.py`.
+В репозитории: `.agents/skills/codex-carousel-imagegen/scripts/fal_imagegen.py`.
+После установки в Claude Code: `~/.claude/skills/codex-carousel-imagegen/scripts/fal_imagegen.py`.
 Запускай тот путь, который существует.
 
 Один файл:
 
 ```bash
-python3 .agents/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py \
-  --prompt "editorial abstract background, no text, no letters, no logo, no watermark" \
+python3 .agents/skills/codex-carousel-imagegen/scripts/fal_imagegen.py \
+  --prompt "dark charcoal editorial background, soft amber glow, no text, no letters, no logo, no watermark" \
   --out carousel-output/assets/cover-background.png \
   --aspect-ratio 4:5
 ```
@@ -60,13 +60,33 @@ python3 .agents/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py \
 Пачка из `image-prompts.md`, JSON-список объектов `{prompt,out,aspect_ratio}`:
 
 ```bash
-python3 .agents/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py \
+python3 .agents/skills/codex-carousel-imagegen/scripts/fal_imagegen.py \
   --jobs carousel-output/image-jobs.json
 ```
 
-Модель по умолчанию: `fal-ai/nano-banana`. Другую модель передавай флагом `--model`.
-Для макета 1080x1350 ставь `--aspect-ratio 4:5`.
-В промте фона запрещай текст, буквы, логотипы и водяные знаки.
+Модель по умолчанию: `openai/gpt-image-2.5/flare/text-to-image`. Качество `high`. Для макета 1080x1350 скрипт сам запрашивает 1088x1360. Другую модель передавай флагом `--model`, например `openai/gpt-image-2.5/sunburst/text-to-image`. Nano Banana только если пользователь назвал его явно.
+В промте фона запрещай текст, буквы, логотипы и водяные знаки. Фон держи в палитре стиля по умолчанию, если пользователь не задал другой.
+
+## Стиль
+
+На генерации пользователь задаёт стиль сам. Спроси фон, шрифт заголовка, шрифт текста и кегль, если этого нет ни в сообщении, ни в `carousel-output/intake.json`. В вопросе назови дефолт, чтобы можно было ответить «оставь».
+
+Ответ пользователя важнее дефолта. Запиши его в `style-lock.md` и в `styleLock` данных рендера. Рендер читает эти поля и меняет слайд:
+
+- `background` цвет фона, дефолт `#101216`
+- `ink` цвет текста, дефолт `#F3F1EC`
+- `accent` акцент, дефолт `#D8A35D`
+- `warning` предупреждение, дефолт `#E27663`
+- `displayFont` CSS font-family заголовка. Дефолт: `Iowan Old Style, Palatino Linotype, Book Antiqua, Georgia, serif`
+- `bodyFont` CSS font-family текста. Дефолт: `Avenir Next, Segoe UI, Arial, sans-serif`
+- `headlineSize` кегль обычного заголовка, дефолт `88`
+- `coverSize` кегль обложки, дефолт `108`
+- `bodySize` кегль текста, дефолт `34`
+- `backgroundMood` и `textStyle` словами
+
+Если пользователь назвал настроение, а не шрифт, подбери ближайший CSS font-family и сохрани его слова в `textStyle`. Не оставляй выбранный стиль только в markdown.
+
+Пока пользователь не задал другое, дефолт такой: формат `1080x1350`, поля `84px`, тёмный фон, тонкая сетка, мягкое янтарное свечение. Картинка лежит под текстом и не содержит букв. В промт фона бери его палитру: цвет фона, акцент, большое пустое место под заголовок, no text, no letters, no logo, no watermark.
 
 ## Когда использовать
 
@@ -78,7 +98,7 @@ python3 .agents/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py \
 
 - пользователь хочет один растровый постер, где весь текст запечён в картинку
 - задачу лучше решать как статью, лендинг или документ
-- нужен чужой image API кроме fal.ai Nano Banana
+- нужен image API кроме fal.ai
 
 ## Значения по умолчанию
 
@@ -117,8 +137,8 @@ python3 .agents/skills/codex-carousel-imagegen/scripts/fal_nano_banana.py \
    - `целиком картинками`
    - `только через кодовый рендер, без Image Gen`
 2. `Для какой площадки и какой нужен тон: Telegram / Instagram / LinkedIn, спокойно / бодро / почти промо?`
-3. `Какой фон и настроение хочешь: журнальный, плёночный, размытый, технологичный, минималистичный, тёмный, светлый?`
-4. `Какой текстовый стиль нужен: крупный заголовок, более плотный набор, строгий editorial, мягкий friendly?`
+3. `Фон: цвет и настроение. Дефолт #101216, тёмный редакционный. Какой берём?`
+4. `Шрифты и кегль. Дефолт: заголовок Iowan Old Style 88 px, обложка 108 px, текст Avenir Next 34 px. Что меняем?`
 
 Если пользователь уже дал часть ответов, спроси только то, чего не хватает.
 
@@ -219,9 +239,8 @@ npm run export
 - Не спрашивай "продолжать ли дальше", если пользователь уже вызвал skill и ответил на уточняющие вопросы.
 - После префлайта сразу переходи к созданию файлов и сборке результата.
 - Если визуалы нужны и ещё не сгенерированы, сначала запиши `image-prompts.md`, затем вызови активный бэкенд из раздела «Откуда брать картинки».
-- Не выбирай визуальный стиль полностью за пользователя, если он ещё не обозначил направление. Сначала запроси режим генерации и визуальные предпочтения.
-- Не молча выбирай `render-only`, `hybrid` или `imagegen-only`. Если режим не указан пользователем, спроси его явно.
-- Не молча выбирай фон, настроение, размер шрифта и плотность набора. Если пользователь это не указал, спроси.
+- Режим генерации спроси, если пользователь его не назвал.
+- Если пользователь задал фон, шрифт или кегль, запиши это в `styleLock` и не подменяй дефолтом. Если не задал, запиши дефолт из раздела «Стиль» и отметь это в `brief.md`.
 
 ## Формат `image-prompts.md`
 
@@ -269,7 +288,7 @@ Prompt: Editorial abstract background about [topic]. No text, no letters, no log
 ## Контракт рендера
 
 - Итоговый текст остаётся в React или HTML.
-- Минимальный безопасный отступ от края: `72px`.
+- Минимальный безопасный отступ от края: `84px`.
 - Размер по умолчанию: `1080x1350`.
 - Layout должен быть предсказуемым и в preview, и в export.
 - Сильная иерархия важнее длинных абзацев.

@@ -11,6 +11,35 @@ const accentMap = {
   gold: "var(--gold)"
 };
 
+function px(value) {
+  if (value === undefined || value === null || value === "") {
+    return "";
+  }
+  return /^\d+(\.\d+)?$/.test(String(value)) ? `${value}px` : String(value);
+}
+
+function themeVars(styleLock = {}) {
+  const vars = {};
+  const set = (name, value) => {
+    if (value) {
+      vars[name] = value;
+    }
+  };
+  set("--paper", styleLock.background);
+  set("--ink", styleLock.ink);
+  set("--gold", styleLock.accent);
+  set("--coral", styleLock.warning);
+  set("--display", styleLock.displayFont);
+  set("--body", styleLock.bodyFont);
+  set("--size-headline", px(styleLock.headlineSize));
+  set("--size-cover", px(styleLock.coverSize));
+  set("--size-body", px(styleLock.bodySize));
+  set("--size-list", px(styleLock.listSize));
+  set("--size-chip", px(styleLock.chipSize));
+  set("--slide-margin", px(styleLock.margin));
+  return vars;
+}
+
 function resolveAsset(slide) {
   if (!slide.runtimeAsset) {
     return null;
@@ -87,7 +116,7 @@ function Slide({ slide, index }) {
 
 function Overview() {
   return (
-    <main className={`app-shell ${exportMode ? "export-mode" : ""}`}>
+    <main className={`app-shell ${exportMode ? "export-mode" : ""}`} style={themeVars(carousel.styleLock)}>
       {!exportMode ? (
         <header className="page-header">
           <div>
@@ -116,7 +145,7 @@ function SingleSlide() {
   const slide = carousel.slides[safeIndex] || carousel.slides[0];
 
   return (
-    <main className={`app-shell single ${exportMode ? "export-mode" : ""}`}>
+    <main className={`app-shell single ${exportMode ? "export-mode" : ""}`} style={themeVars(carousel.styleLock)}>
       <Slide slide={slide} index={safeIndex} />
     </main>
   );
